@@ -34,4 +34,10 @@ class Uer(models.Model):
         verbose_name='注册日期',
         auto_now_add=True
     )
+class book_administrator(models.Model):
+    name=models.CharField('名字',max_length=20)
+    password=CharField('<PASSWORD>',max_length=20)
+    search_quantity=models.IntegerField('待审核数量',blank=True)
+
+    
 
