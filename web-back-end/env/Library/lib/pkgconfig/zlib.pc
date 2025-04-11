@@ -1,0 +1,13 @@
+prefix=E:/python-project/project-one/web-back-end/env/Library
+exec_prefix=E:/python-project/project-one/web-back-end/env/Library
+libdir=E:/python-project/project-one/web-back-end/env/Library/lib
+sharedlibdir=E:/python-project/project-one/web-back-end/env/Library/lib
+includedir=E:/python-project/project-one/web-back-end/env/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
