@@ -1,5 +1,5 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin #
+from django.contrib.auth.admin import UserAdmin #注册我的用户模型
 from .models import *
 
 admin.site.register(Book)

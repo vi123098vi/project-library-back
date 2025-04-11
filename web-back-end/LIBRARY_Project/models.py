@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
+#图书模型
 class Book(models.Model):
     id = models.AutoField(primary_key=True)
     title=models.CharField('书名',max_length=200)
@@ -13,17 +13,15 @@ class Book(models.Model):
         ('借出','借出')
     ],default='在库')
     total_copies = models.IntegerField('总库存数量',default=0)
-    stock_quantity=models.IntegerField('库存数量',default=0)
+    stock_quantity=models.IntegerField('当前库存数量',default=0)
     borrow_quantity=models.IntegerField('借阅数量',default=0)
 
-
-
+#用户模型
 class User(AbstractUser):
-    is_staff = models.BooleanField(default=False) # 管理员标识
     is_active=models.BooleanField(default=True) # 用户状态
     phone=models.CharField('手机号码',max_length=20,blank=True)
 
-
+#借阅记录模型
 class BorrowRecord(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -37,8 +35,9 @@ class BorrowRecord(models.Model):
         ('returned', '已归还')
     ]
     status = models.CharField('借阅状态',max_length=10, choices=STATUS_CHOICES, default='borrowed')
+    renew_count = models.PositiveSmallIntegerField(default=0)
 
-
+#管理员借阅日志模型
 class ReviewLog(models.Model):
     ACTION_CHOICES = [
         ('approve', '通过借阅'),
@@ -61,7 +60,6 @@ class BookLog(models.Model):
         ('update', '修改图书'),
         ('delete', '删除图书')
     ]
-
     admin = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     action = models.CharField(max_length=10, choices=ACTION_CHOICES)

@@ -41,22 +41,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "LIBRARY_Project",
     "rest_framework_simplejwt",
+    "sslserver",
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',  # 启用 JWT 认证
-    ),
-}
 
-
-SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -129,9 +117,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-hans"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Shanghai"
 
 USE_I18N = True
 
@@ -147,11 +135,51 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = 'LIBRARY_Project.User'  # 指定自定义用户模型
+AUTH_USER_MODEL = 'LIBRARY_Project.User'
 
-#跨域配置
-CORS_ALLOW_ALL_ORIGINS=[
-    'http://localhost:8085/',
-    'http://10.90.37.97:8085/'
+CORS_ALLOW_ALL_ORIGINS = True
+# settings.py
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8086",      # 本地开发环境
+    "http://127.0.0.1:8086",      # 备用本地地址
 ]
-CORS_ALLOW_CREDENTIALS=True
+CORS_ALLOW_HEADERS = [
+    'authorization',       # 必须
+    'content-type',
+]
+CORS_EXPOSE_HEADERS = [    # ⭐ 新增关键配置
+    'Authorization',
+    'X-Total-Count',
+    'Content-Range'
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'OPTIONS',  # ⚠️ 必须包含OPTIONS
+    'PUT',
+    'PATCH',
+    'DELETE',
+]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),    # Access Token 有效期
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),       # Refresh Token 有效期
+    'ROTATE_REFRESH_TOKENS': True,                     # 刷新时生成新 Refresh Token
+    'BLACKLIST_AFTER_ROTATION': True,                  # 旧 Refresh Token 加入黑名单
+    'ALGORITHM': 'HS256',
+    'AUTH_HEADER_TYPES': ('Bearer',),  # 请求头认证前缀
+    'USER_ID_FIELD': 'id',  # 关联自定义用户模型
+}
